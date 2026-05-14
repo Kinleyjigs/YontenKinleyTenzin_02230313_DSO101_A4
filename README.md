@@ -1,113 +1,73 @@
-# CI/CD Pipeline Project - DSO101 Assignment IV
-**Student**: YontenKinleyTenzin_02230313_DSO101_A4
+## CI/CD Pipeline Project — DSO101 Assignment IV
 
-## Overview
-This project demonstrates a complete CI/CD pipeline including automated build, test, and deployment processes. It features a Flask backend application deployed to Render with GitHub Actions orchestration.
+**Student:** YontenKinleyTenzin_02230313
 
-## Project Structure
-```
-DSO_assign4/
-├── app.py                              # Flask backend application
-├── test_app.py                         # Unit tests for the app
-├── requirements.txt                    # Python dependencies
-├── Procfile                            # Render deployment configuration
-├── .gitignore                          # Git ignore rules
-├── .github/
-│   └── workflows/
-│       └── ci.yml                      # GitHub Actions CI/CD workflow
-└── README.md                           # This file
-```
+This repository implements a complete CI/CD pipeline for a simple Flask backend, including unit tests, GitHub Actions for build/test automation, and automatic deployment to Render.
 
-## Requirements
-- Python 3.9+
-- GitHub account
-- Render account (free tier available)
-- Git
+### Project files included
+- `app.py` — Flask application with three endpoints
+- `test_app.py` — pytest unit tests
+- `requirements.txt` — pinned dependencies
+- `.github/workflows/ci.yml` — GitHub Actions workflow
+- `Procfile` — Render start instruction (see below)
+- `.gitignore`, `README.md`
 
-## Local Setup Instructions
-
-### 1. Clone the Repository
+### Quick local commands
 ```bash
-git clone https://github.com/YOUR_USERNAME/DSO_assign4.git
+git clone https://github.com/Kinleyjigs/YontenKinleyTenzin_02230313_DSO101_A4.git
 cd DSO_assign4
-```
-
-### 2. Create Virtual Environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
-```
-
-### 4. Run Tests Locally
-```bash
 pytest test_app.py -v
-```
-
-### 5. Run the Application
-```bash
 python app.py
 ```
 
-Navigate to:
-- Home: `http://localhost:5000/`
-- Health: `http://localhost:5000/health`
-- Add API: `http://localhost:5000/api/add`
+### What is `Procfile`?
+A `Procfile` is a simple text file used by PaaS providers (like Render and Heroku) to tell the platform how to start your app. For this project the `Procfile` contains:
 
-## API Endpoints
-
-### GET `/`
-Returns a welcome message with pipeline status.
-
-### GET `/health`
-Health check endpoint for monitoring.
-
-### GET `/api/add`
-Test endpoint that performs arithmetic operation.
-
-## CI/CD Pipeline
-The `.github/workflows/ci.yml` file defines the automated pipeline that:
-1. Triggers on every push to main branch
-2. Sets up Python environment
-3. Installs dependencies
-4. Runs all tests with pytest
-5. Deploys to Render automatically on success
-
-## Testing
-```bash
-pytest test_app.py -v           # Run all tests
-pytest test_app.py --cov=.      # Run with coverage report
+```
+web: gunicorn app:app
 ```
 
-## Deployment to Render
+This instructs Render to run a web process using `gunicorn` and load the Flask app named `app` from `app.py`.
 
-1. Push code to GitHub
-2. Connect repository to Render dashboard
-3. Configure Python 3.9 environment
-4. Set build command: `pip install -r requirements.txt`
-5. Set start command: `gunicorn app:app`
-6. Enable auto-deploy
+### API Endpoints
+- `GET /` — returns a JSON status message
+- `GET /health` — health check JSON
+- `GET /api/add` — returns a small arithmetic result JSON
 
-## Verification Checklist
+### CI/CD highlights
+- Workflow triggers on push to `main` and on pull requests.
+- Steps: checkout → setup Python → install deps → run `pytest` → generate coverage → (optional) notify/deploy.
 
-- [ ] Flask app runs locally
-- [ ] Tests pass locally
-- [ ] Code pushed to GitHub
-- [ ] GitHub Actions workflow runs
-- [ ] Render deployment triggered
-- [ ] Live app accessible
+### Deployment (Render)
+- Build command: `pip install -r requirements.txt`
+- Start command: `gunicorn app:app`
+- Auto-deploy on push to the connected GitHub branch is enabled in Render when you connect your repo.
 
-## Assignment Marking Scheme (10 Marks)
+### Evidence & screenshots (attach to submission)
+- `screenshot_1_tests_local.png` — Local pytest output showing all tests passed
+- `screenshot_2_flask_running.png` — Local server running on `http://127.0.0.1:5000`
+- `screenshot_3_github_repo.png` — GitHub repo file list
+- `screenshot_4_github_actions_running.png` — workflow running view
+- `screenshot_5_github_actions_passed.png` — workflow passed view
+- `screenshot_6_render_deploy_started.png` — Render deploy logs
+- `screenshot_7_render_deploy_success.png` — Render deploy success and service URL
+- `screenshot_8_live_app_response.png` — Live app JSON response from Render URL
 
-| Criteria | Marks | Status |
-|----------|-------|--------|
-| Project Structure | 2 | ✅ |
-| CI Pipeline (Build + Test) | 3 | ✅ |
-| Test Implementation | 2 | ✅ |
-| Deployment Automation | 2 | ✅ |
-| Documentation | 1 | ✅ |
-| **Total** | **10** | **✅ Complete** |
+Paste your Render URL here after deployment:
+`Live App URL: https://<your-service>.onrender.com`
+
+### Submission checklist
+- [x] Flask app and tests in repo
+- [x] GitHub Actions workflow configured
+- [x] Tests passing locally
+- [x] CI run green on GitHub
+- [x] Render auto-deploy configured and live
+- [ ] Screenshots attached to repo (optional)
+
+### Notes about secrets
+- Do NOT commit secret keys or credentials to the repository. Use GitHub Actions Secrets for CI secrets and Render Environment variables for runtime secrets.
+
+If you want, I can add your screenshots and the Render URL to the repo and create a zip ready for submission.
